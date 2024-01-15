@@ -194,9 +194,9 @@ def training_loss(net, loss_fn, X, diffusion_hyperparams, only_generate_missing=
         (transformed_X, cond, mask, diffusion_steps.view(B, 1),))  # predict \epsilon according to \epsilon_\theta
 
     if only_generate_missing == 1:
-        return loss_fn(epsilon_theta[loss_mask], z[loss_mask])
+        return loss_fn(epsilon_theta[loss_mask], z[loss_mask])*100
     elif only_generate_missing == 0:
-        return loss_fn(epsilon_theta, z)
+        return loss_fn(epsilon_theta, z)*100
 
 
 def get_mask_rm(sample, k):

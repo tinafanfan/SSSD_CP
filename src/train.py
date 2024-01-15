@@ -18,6 +18,9 @@ from torch.utils.tensorboard import SummaryWriter
 import random
 from math import floor
 
+from torchmetrics.regression import MeanAbsolutePercentageError
+
+
 def train(output_directory,
           ckpt_iter,
           n_iters,
@@ -170,9 +173,10 @@ def train(output_directory,
             # back-propagation
             optimizer.zero_grad()
             X = batch, batch, mask, loss_mask
-            loss = training_loss(net, nn.MSELoss(), X, diffusion_hyperparams,
-                                 only_generate_missing=only_generate_missing)
-
+            # loss = training_loss(net, nn.MSELoss(), X, diffusion_hyperparams,
+            #                      only_generate_missing=only_generate_missing)
+            loss = training_loss(net, MeanAbsolutePercentageError().cuda(), X, diffusion_hyperparams,
+                                 only_generate_missing=only_generate_missing)                                 
 
             loss.backward()
             optimizer.step()
