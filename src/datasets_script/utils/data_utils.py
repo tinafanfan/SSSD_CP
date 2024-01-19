@@ -199,7 +199,7 @@ def pd_to_numpy(load, zones_num, days_window):
     return load_array[1:] # delete the 1 st slice created by np.empty(dim)
 
 
-def train_test_select(data_ls, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
+def train_test_select(data_ls, train_start, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
 
     '''
     根據時間劃分，將 npy 分成 training set 和 testing set
@@ -213,7 +213,7 @@ def train_test_select(data_ls, train_end, test_start, test_end, zone_number, day
     for df in data_ls:
         
         if zone_name == 'ALL':
-            df_train = df[(df['Date']<=train_end)] 
+            df_train = df[(df['Date']>=train_start) & (df['Date']<=train_end)] 
             df_test  = df[(df['Date']>=test_start) & (df['Date']<=test_end)]
         else:
             df_train = df[(df['Zone']==zone_name) & (df['Date']<=train_end)] 
@@ -237,7 +237,7 @@ def train_test_select(data_ls, train_end, test_start, test_end, zone_number, day
     return load_array_train, load_array_test
 
 
-def normalization(data, days_normalized):
+def z_normalization(data, days_normalized):
     '''
     將每一條 ts 做 normalization (x-mean)/sd
     
@@ -250,9 +250,27 @@ def normalization(data, days_normalized):
 
     mean = np.mean(data[:, 0:(days_normalized*24), :], axis = 1).reshape(obs, 1, channel)
     std  = np.std(data[:, 0:(days_normalized*24), :], axis = 1).reshape(obs, 1, channel)
-    data_stdd = (data - mean)/std
+    data_normalized = (data - mean)/std
 
-    return data_stdd
+    return data_normalized
+
+def range_normalization(data, days_normalized):
+    '''
+    將每一條 ts 做 normalization (x-min)/(max - min)
+    
+    input:  npy (obs, length, channel)
+    output: npy (obs, length, channel)
+    '''
+
+    obs = data.shape[0]
+    channel = data.shape[2]
+
+    min_value = np.min(data[:, 0:(days_normalized*24), :], axis = 1).reshape(obs, 1, channel)
+    max_value = np.max(data[:, 0:(days_normalized*24), :], axis = 1).reshape(obs, 1, channel)
+    
+    data_normalized = (data - min_value)/(max_value - min_value)
+
+    return data_normalized
 
 
 

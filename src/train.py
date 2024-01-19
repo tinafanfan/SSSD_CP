@@ -81,6 +81,15 @@ def train(output_directory,
         print('Model chosen not available.')
     print_size(net)
 
+    # Check if multiple GPUs are available
+    if torch.cuda.device_count() > 1:
+        print("Using ", torch.cuda.device_count(), " GPUs!")
+        net = nn.DataParallel(net)
+
+    # Move the model to the GPU(s)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    net.to(device)
+
     # define optimizer
     optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
@@ -115,19 +124,8 @@ def train(output_directory,
     ### Custom data loading and reshaping ###
     training_data = np.load(trainset_config['train_data_path'])
 
-    # batch_size = 80 # 400 太多
-    # training_size = training_data.shape[0]
-    # #################################### 
-    # # training_data = training_data[0:4418,] # 現在 4423 無法被整除，用回原本的 4418
-    # ####################################
-    # training_data = np.split(training_data, training_size/batch_size, 0) # 為了創造 batch，除不盡可用 np.array_split
-    # # training_data = np.array_split(training_data, training_size/batch_size, 0) # 將 training_size 分成 training_size/batch_size 堆可能不同 size 的 batch
-    # training_data = np.array(training_data)
-    # training_data = torch.from_numpy(training_data).float().cuda()
-    # print('Data loaded')
 
-
-    batch_size = 80
+    batch_size = 160
     training_size = training_data.shape[0]
 
     batch_num = floor(training_size/batch_size)
@@ -173,10 +171,10 @@ def train(output_directory,
             # back-propagation
             optimizer.zero_grad()
             X = batch, batch, mask, loss_mask
-            # loss = training_loss(net, nn.MSELoss(), X, diffusion_hyperparams,
-            #                      only_generate_missing=only_generate_missing)
-            loss = training_loss(net, MeanAbsolutePercentageError().cuda(), X, diffusion_hyperparams,
-                                 only_generate_missing=only_generate_missing)                                 
+            loss = training_loss(net, nn.MSELoss(), X, diffusion_hyperparams,
+                                 only_generate_missing=only_generate_missing)
+            # loss = training_loss(net, MeanAbsolutePercentageError().cuda(), X, diffusion_hyperparams,
+            #                      only_generate_missing=only_generate_missing)                                 
 
             loss.backward()
             optimizer.step()
