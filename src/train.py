@@ -18,7 +18,7 @@ from torch.utils.tensorboard import SummaryWriter
 import random
 from math import floor
 
-from torchmetrics.regression import MeanAbsolutePercentageError
+# from torchmetrics.regression import MeanAbsolutePercentageError
 
 
 def train(output_directory,
