@@ -3,6 +3,7 @@ import argparse
 import json
 import numpy as np
 import torch
+import torch.nn as nn
 
 from utils.util import get_mask_mnr, get_mask_bm, get_mask_rm, get_mask_forecast
 from utils.util import find_max_epoch, print_size, sampling, calc_diffusion_hyperparams
@@ -72,6 +73,14 @@ def generate(output_directory,
         print('Model chosen not available.')
     print_size(net)
 
+    # Check if multiple GPUs are available
+    if torch.cuda.device_count() > 1:
+        print("Using ", torch.cuda.device_count(), " GPUs!")
+        net = nn.DataParallel(net)
+
+    # Move the model to the GPU(s)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    net.to(device)
     
     # load checkpoint
     ckpt_path = os.path.join(ckpt_path, local_path)
@@ -217,7 +226,7 @@ if __name__ == "__main__":
     elif train_config['use_model'] == 2:
         model_config = config['wavenet_config']
 
-    for i in range(100):
+    for i in range(10):
         print(i)
         current_time = datetime.datetime.now()
         print("當前時間:", current_time.strftime("%Y-%m-%d %H:%M:%S"))   

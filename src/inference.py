@@ -3,6 +3,7 @@ import argparse
 import json
 import numpy as np
 import torch
+import torch.nn as nn
 
 from utils.util import get_mask_mnr, get_mask_bm, get_mask_rm, get_mask_forecast
 from utils.util import find_max_epoch, print_size, sampling, calc_diffusion_hyperparams
@@ -71,6 +72,14 @@ def generate(output_directory,
         print('Model chosen not available.')
     print_size(net)
 
+    # Check if multiple GPUs are available
+    if torch.cuda.device_count() > 1:
+        print("Using ", torch.cuda.device_count(), " GPUs!")
+        net = nn.DataParallel(net)
+
+    # Move the model to the GPU(s)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    net.to(device)
     
     # load checkpoint
     ckpt_path = os.path.join(ckpt_path, local_path)
@@ -80,6 +89,7 @@ def generate(output_directory,
     try:
         checkpoint = torch.load(model_path, map_location='cpu')
         print("checkpoint")
+        # net.load_state_dict(checkpoint['model_state_dict'], strict=False)
         net.load_state_dict(checkpoint['model_state_dict'])
         print('Successfully loaded model at iteration {}'.format(ckpt_iter))
     except:

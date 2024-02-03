@@ -3,6 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import STL
 
+def printsth(sth):
+    # print(sth)
+    print("tina")
+
 def merge_all_time(df):
     '''
     補上所有時間點，創造應該補值的row
@@ -213,10 +217,14 @@ def train_test_select(data_ls, train_start, train_end, test_start, test_end, zon
     for df in data_ls:
         
         if zone_name == 'ALL':
-            df_train = df[(df['Date']>=train_start) & (df['Date']<=train_end)] 
-            df_test  = df[(df['Date']>=test_start) & (df['Date']<=test_end)]
+            df_train = df[(df['Date']>=train_start) 
+                        & (df['Date']<=train_end)] 
+            df_test  = df[(df['Date']>=test_start) 
+                        & (df['Date']<=test_end)]
         else:
-            df_train = df[(df['Zone']==zone_name) & (df['Date']<=train_end)] 
+            df_train = df[(df['Zone']==zone_name) 
+                        & (df['Date']>=train_start) 
+                        & (df['Date']<=train_end)] 
             df_test  = df[(df['Zone']==zone_name) 
                         & (df['Date']>=test_start)
                         & (df['Date']<=test_end)]
