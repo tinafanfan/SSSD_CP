@@ -32,8 +32,8 @@
         "missing_k": 24
     },
     "trainset_config":{
-        "train_data_path": "./datasets/NYISO/8_days/zone/load_array_N.Y.C._train_stdd_I1.npy",
-        "test_data_path": "./datasets/NYISO/8_days/zone/load_array_N.Y.C._test_stdd.npy",
+        "train_data_path": "./datasets/NYISO/dataset_1/zone/load_array_N.Y.C._train_stdd_I1.npy",
+        "test_data_path": "./datasets/NYISO/dataset_1/zone/load_array_N.Y.C._test_stdd.npy",
         "segment_length":100,
         "sampling_rate": 100
     },
