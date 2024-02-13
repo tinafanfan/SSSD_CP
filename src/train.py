@@ -125,7 +125,7 @@ def train(output_directory,
     training_data = np.load(trainset_config['train_data_path'])
 
 
-    batch_size = 160
+    batch_size = 80
     training_size = training_data.shape[0]
 
     batch_num = floor(training_size/batch_size)
@@ -137,7 +137,7 @@ def train(output_directory,
     training_data = np.array(training_data)
     training_data = torch.from_numpy(training_data).float().cuda()
     print('Data loaded')
-
+    
     
     
     # training
