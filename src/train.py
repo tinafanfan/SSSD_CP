@@ -122,17 +122,15 @@ def train(output_directory,
         
     
     ### Custom data loading and reshaping ###
-    training_data = np.load(trainset_config['train_data_path'])
-
+    training_data_load = np.load(trainset_config['train_data_path'])
 
     batch_size = 80
-    training_size = training_data.shape[0]
-
+    training_size = training_data_load.shape[0]
     batch_num = floor(training_size/batch_size)
     print(batch_num)
-    index = random.sample(range(training_size), batch_num*batch_size)
 
-    training_data = training_data[index,] # 捨棄 training_size 除以 batch_size 的餘數
+    index = random.sample(range(training_size), batch_num*batch_size)
+    training_data = training_data_load[index,] # 捨棄 training_size 除以 batch_size 的餘數
     training_data = np.split(training_data, batch_num, 0) # split into batch_num batches
     training_data = np.array(training_data)
     training_data = torch.from_numpy(training_data).float().cuda()
@@ -148,10 +146,19 @@ def train(output_directory,
 
     print(f'start the {n_iter} iteration')
     while n_iter < n_iters + 1:
+        # loss_all = 0
 
-        loss_all = 0
         for batch in training_data:
 
+            ############ shuffle batch after each epoch ############
+            if n_iter % batch_num == 0:
+                print(f'update training batch at {n_iter}')
+                index = random.sample(range(training_size), batch_num*batch_size)
+                training_data = training_data_load[index,] # 捨棄 training_size 除以 batch_size 的餘數
+                training_data = np.split(training_data, batch_num, 0) # split into batch_num batches
+                training_data = np.array(training_data)
+                training_data = torch.from_numpy(training_data).float().cuda()
+            ################################################
             if masking == 'rm':
                 transposed_mask = get_mask_rm(batch[0], missing_k)
             elif masking == 'mnr':
@@ -179,7 +186,7 @@ def train(output_directory,
             loss.backward()
             optimizer.step()
 
-            loss_all += loss.item()
+            # loss_all += loss.item()
             writer.add_scalar('Train/Loss', loss.item(), n_iter)
 
             if n_iter % iters_per_logging == 0:

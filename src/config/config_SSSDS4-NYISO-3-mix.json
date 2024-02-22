@@ -20,7 +20,7 @@
         "s4_layernorm":1
     },
     "train_config": {
-        "output_directory": "./results/NYISO_3_MILLWD",
+        "output_directory": "./results/NYISO_3_mix",
         "ckpt_iter": "max",
         "iters_per_ckpt": 5000,
         "iters_per_logging": 1000,
@@ -32,13 +32,13 @@
         "missing_k": 24
     },
     "trainset_config":{
-        "train_data_path": "./datasets/NYISO/dataset_3/zone/MILLWD_train_stdd.npy",
-        "test_data_path": "./datasets/NYISO/dataset_3/zone/MILLWD_test_stdd.npy",
+        "train_data_path": "./datasets/NYISO/dataset_3/mix/load_array_mix_train_stdd.npy",
+        "test_data_path": "./datasets/NYISO/dataset_3/mix/load_array_mix_test_stdd.npy",
         "segment_length":100,
         "sampling_rate": 100
     },
     "gen_config":{
-	    "output_directory": "./results/NYISO_3_MILLWD",
-        "ckpt_path": "./results/NYISO_3_MILLWD"
+	    "output_directory": "./results/NYISO_3_mix",
+        "ckpt_path": "./results/NYISO_3_mix"
     }
 }

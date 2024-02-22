@@ -123,7 +123,8 @@ def generate_date_from_seq(value):
     output: date
     input: a value (obs)
     """
-    start_date = datetime.strptime("2019-01-08", "%Y-%m-%d")
+    # start_date = datetime.strptime("2019-01-08", "%Y-%m-%d")
+    start_date = datetime.strptime("2016-10-20", "%Y-%m-%d")
     days_offset = value
     target_date = start_date + timedelta(days=days_offset)
     formatted_date = target_date.strftime("%Y/%m/%d")
