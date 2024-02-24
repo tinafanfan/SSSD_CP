@@ -49,7 +49,7 @@ def generate(output_directory,
                                               diffusion_config["beta_T"])
 
     # Get shared output_directory ready
-    output_directory = os.path.join(output_directory, local_path)
+    output_directory = os.path.join(output_directory, local_path, 'imputaiton_multiple_'+ str(round(int(ckpt_iter)/1000)) +'k')
     if not os.path.isdir(output_directory):
         os.makedirs(output_directory)
         os.chmod(output_directory, 0o775)
@@ -164,15 +164,15 @@ def generate(output_directory,
         
         
         outfile = f'imputation{i}.npy'
-        new_out = os.path.join(ckpt_path, outfile)
+        new_out = os.path.join(output_directory, outfile)
         np.save(new_out, generated_audio)
 
         outfile = f'original{i}.npy'
-        new_out = os.path.join(ckpt_path, outfile)
+        new_out = os.path.join(output_directory, outfile)
         np.save(new_out, batch)
 
         outfile = f'mask{i}.npy'
-        new_out = os.path.join(ckpt_path, outfile)
+        new_out = os.path.join(output_directory, outfile)
         np.save(new_out, mask)
 
         print('saved generated samples at iteration %s' % ckpt_iter)

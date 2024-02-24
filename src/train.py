@@ -152,7 +152,7 @@ def train(output_directory,
 
             ############ shuffle batch after each epoch ############
             if n_iter % batch_num == 0:
-                print(f'update training batch at {n_iter}')
+                # print(f'update training batch at {n_iter}')
                 index = random.sample(range(training_size), batch_num*batch_size)
                 training_data = training_data_load[index,] # 捨棄 training_size 除以 batch_size 的餘數
                 training_data = np.split(training_data, batch_num, 0) # split into batch_num batches
