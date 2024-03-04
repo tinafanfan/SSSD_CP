@@ -13,6 +13,6 @@ NYISO cleaned data: [download](https://drive.google.com/drive/folders/1dwPkBIHSi
 
 ## Seggestion
 1. Use `CUDA_VISIBLE_DEVICES` to specify the number of GPUs. Both training and inference require the same number of GPUs.
-2. Use the sample size as the parameter `num_samples` in the inference section.
+2. Use the sample size as the parameter `--num_samples` in the inference section.
 
 
