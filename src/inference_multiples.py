@@ -194,7 +194,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', type=str, default='config.json',
                         help='JSON file for configuration')
-    parser.add_argument('-n', '--num_samples', type=int, default=200,
+    parser.add_argument('-n', '--num_samples', type=int, default=1,
                         help='Number of utterances to be generated')                        
     parser.add_argument('-ckpt_iter', '--ckpt_iter', default='max',
                         help='Which checkpoint to use; assign a number or "max"')
