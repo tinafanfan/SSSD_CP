@@ -2,7 +2,7 @@
 
 
 ## Dataset
-NYISO cleaned data: [dounload](https://drive.google.com/drive/folders/1dwPkBIHSikhQ5ru3HPQiILSnaGAtP3Yr?usp=sharing)
+NYISO cleaned data: [download](https://drive.google.com/drive/folders/1dwPkBIHSikhQ5ru3HPQiILSnaGAtP3Yr?usp=sharing)
 
 
 ## Implement
