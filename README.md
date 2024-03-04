@@ -2,7 +2,11 @@
 
 
 ## Dataset
-NYISO cleaned data: [download](https://drive.google.com/drive/folders/1dwPkBIHSikhQ5ru3HPQiILSnaGAtP3Yr?usp=sharing)
+1. The NYISO dataset can be downloaded from https://www.nyiso.com/.
+2. The cleaned data created by the author can be downloaded from [link](https://drive.google.com/drive/folders/1dwPkBIHSikhQ5ru3HPQiILSnaGAtP3Yr?usp=sharing).
+
+
+Note that the cleaned data is created following the scripts in dataset_script/nyiso-csv-to-pickle.ipynb and dataset_script/nyiso-load-pickle-to-npy.ipynb.
 
 
 ## Implement
