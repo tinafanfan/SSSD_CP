@@ -49,12 +49,7 @@ def generate(output_directory,
                                               diffusion_config["beta_0"],
                                               diffusion_config["beta_T"])
 
-    # Get shared output_directory ready
-    output_directory = os.path.join(output_directory, local_path, 'imputaiton_multiple_'+ str(round(int(ckpt_iter)/1000)) +'k')
-    if not os.path.isdir(output_directory):
-        os.makedirs(output_directory)
-        os.chmod(output_directory, 0o775)
-    print("output directory", output_directory, flush=True)
+
 
     # map diffusion hyperparameters to gpu
     for key in diffusion_hyperparams:
@@ -87,6 +82,7 @@ def generate(output_directory,
     if ckpt_iter == 'max':
         ckpt_iter = find_max_epoch(ckpt_path)
     model_path = os.path.join(ckpt_path, '{}.pkl'.format(ckpt_iter))
+
     try:
         checkpoint = torch.load(model_path, map_location='cpu')
         print("checkpoint")
@@ -95,7 +91,13 @@ def generate(output_directory,
     except:
         raise Exception('No valid model found')
 
-        
+    # Get shared output_directory ready
+    output_directory = os.path.join(output_directory, local_path, 'imputaiton_multiple_'+ str(round(int(ckpt_iter)/1000)) +'k')
+    if not os.path.isdir(output_directory):
+        os.makedirs(output_directory)
+        os.chmod(output_directory, 0o775)
+    print("output directory", output_directory, flush=True)
+
         
     ### Custom data loading and reshaping ###
 
@@ -192,10 +194,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', type=str, default='config.json',
                         help='JSON file for configuration')
+    parser.add_argument('-n', '--num_samples', type=int, default=200,
+                        help='Number of utterances to be generated')                        
     parser.add_argument('-ckpt_iter', '--ckpt_iter', default='max',
                         help='Which checkpoint to use; assign a number or "max"')
-    parser.add_argument('-n', '--num_samples', type=int, default=200,
-                        help='Number of utterances to be generated')
     args = parser.parse_args()
 
     # Parse configs. Globals nicer in this case
