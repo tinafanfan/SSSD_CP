@@ -235,12 +235,18 @@ def train_test_select(data_ls, train_start, train_end, test_start, test_end, zon
         if df_test.shape[0] > 0:
             np_list_test.append(pd_to_numpy(df_test, zone_number, days_window))
 
-    load_array_train = np.vstack(np_list_train)
-    load_array_test = np.vstack(np_list_test)
+    load_array_train = np.vstack(np_list_train) # (obs., 1, length)
+    load_array_test = np.vstack(np_list_test) # (obs., 1, length)
 
     # exchange channel and length (obs., 1, length) -> (obs., length, 1) 
-    load_array_train = np.einsum('ijk->ikj',load_array_train)
-    load_array_test = np.einsum('ijk->ikj',load_array_test)
+    # load_array_train = np.einsum('ijk->ikj',load_array_train)
+    # load_array_test = np.einsum('ijk->ikj',load_array_test)
+
+    # remove rows (reduce obs.) which contain nan,  (obs., 1, length)
+    load_array_train = load_array_train[~np.isnan(load_array_train).any(axis=2)] # (obs., length)
+    load_array_train = np.expand_dims(load_array_train, axis=2) # (obs., length, 1)
+    load_array_test = load_array_test[~np.isnan(load_array_test).any(axis=2)] # (obs., length)
+    load_array_test = np.expand_dims(load_array_test, axis=2) # (obs., length, 1)
 
     return load_array_train, load_array_test
 
