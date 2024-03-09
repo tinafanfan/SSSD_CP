@@ -20,7 +20,7 @@
         "s4_layernorm":1
     },
     "train_config": {
-        "output_directory": "./results/ar1-3",
+        "output_directory": "./results/ar1-5",
         "ckpt_iter": "max",
         "iters_per_ckpt": 5000,
         "iters_per_logging": 1000,
@@ -29,16 +29,16 @@
         "only_generate_missing": 1,
         "use_model": 2,
         "masking": "forecast",
-        "missing_k": 2
+        "missing_k": 1
     },
     "trainset_config":{
-        "train_data_path": "./datasets/AR/train_ar1_10000_4.npy",
-        "test_data_path": "./datasets/AR/test_ar1_1000_4.npy",
+        "train_data_path": "./datasets/AR/train_ar1_10000_100.npy",
+        "test_data_path": "./datasets/AR/test_ar1_1000_100.npy",
         "segment_length":100,
         "sampling_rate": 100
     },
     "gen_config":{
-	    "output_directory": "./results/ar1-3",
-        "ckpt_path": "./results/ar1-3/"
+	    "output_directory": "./results/ar1-5",
+        "ckpt_path": "./results/ar1-5/"
     }
 }
