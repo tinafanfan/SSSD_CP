@@ -33,7 +33,7 @@
     },
     "trainset_config":{
         "train_data_path": "./datasets/AR/train_ar1_10000_3.npy",
-        "test_data_path": "./datasets/AR/test_ar1_1000_3.npy",
+        "test_data_path": "./datasets/AR/train_ar1_10000_3_I2.npy",
         "segment_length":100,
         "sampling_rate": 100
     },

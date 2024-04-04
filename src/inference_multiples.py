@@ -228,7 +228,7 @@ if __name__ == "__main__":
     elif train_config['use_model'] == 2:
         model_config = config['wavenet_config']
 
-    for i in range(10):
+    for i in range(100):
         print(i)
         current_time = datetime.datetime.now()
         print("當前時間:", current_time.strftime("%Y-%m-%d %H:%M:%S"))   
