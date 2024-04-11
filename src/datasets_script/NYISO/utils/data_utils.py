@@ -203,7 +203,7 @@ def pd_to_numpy(load, zones_num, days_window):
     return load_array[1:] # delete the 1 st slice created by np.empty(dim)
 
 
-def train_test_select(data_ls, train_start, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
+def train_test_select(df, train_start, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
 
     '''
     根據時間劃分，將 npy 分成 training set 和 testing set
@@ -212,41 +212,28 @@ def train_test_select(data_ls, train_start, train_end, test_start, test_end, zon
     input: data_ls 長度為 8 (8 periods)的 list，每個元素都是 dataframe
     output: 兩個 npy (obs, length, channel)
     '''
-    np_list_train = []
-    np_list_test = []
-    for df in data_ls:
+    # np_list_train = []
+    # np_list_test = []
+    # for df in data_ls:
+    if zone_name == 'ALL':
+        df_train = df[(df['Date']>=train_start) 
+                    & (df['Date']<=train_end)] 
+        df_test  = df[(df['Date']>=test_start) 
+                    & (df['Date']<=test_end)]
+    else:
+        df_train = df[(df['Zone']==zone_name) 
+                    & (df['Date']>=train_start) 
+                    & (df['Date']<=train_end)] 
+        df_test  = df[(df['Zone']==zone_name) 
+                    & (df['Date']>=test_start)
+                    & (df['Date']<=test_end)]
         
-        if zone_name == 'ALL':
-            df_train = df[(df['Date']>=train_start) 
-                        & (df['Date']<=train_end)] 
-            df_test  = df[(df['Date']>=test_start) 
-                        & (df['Date']<=test_end)]
-        else:
-            df_train = df[(df['Zone']==zone_name) 
-                        & (df['Date']>=train_start) 
-                        & (df['Date']<=train_end)] 
-            df_test  = df[(df['Zone']==zone_name) 
-                        & (df['Date']>=test_start)
-                        & (df['Date']<=test_end)]
-        
-        # 沒有選到的 period (ex:2020) shape[0]就會是0，會有 error
-        if df_train.shape[0] > 0:
-            np_list_train.append(pd_to_numpy(df_train, zone_number, days_window))
-        if df_test.shape[0] > 0:
-            np_list_test.append(pd_to_numpy(df_test, zone_number, days_window))
+    np_train = pd_to_numpy(df_train, zone_number, days_window)
+    np_test = pd_to_numpy(df_test, zone_number, days_window)
 
-    load_array_train = np.vstack(np_list_train) # (obs., 1, length)
-    load_array_test = np.vstack(np_list_test) # (obs., 1, length)
-
-    # exchange channel and length (obs., 1, length) -> (obs., length, 1) 
-    # load_array_train = np.einsum('ijk->ikj',load_array_train)
-    # load_array_test = np.einsum('ijk->ikj',load_array_test)
-
-    # remove rows (reduce obs.) which contain nan,  (obs., 1, length)
-    load_array_train = load_array_train[~np.isnan(load_array_train).any(axis=2)] # (obs., length)
-    load_array_train = np.expand_dims(load_array_train, axis=2) # (obs., length, 1)
-    load_array_test = load_array_test[~np.isnan(load_array_test).any(axis=2)] # (obs., length)
-    load_array_test = np.expand_dims(load_array_test, axis=2) # (obs., length, 1)
+    # remove rows (reduce obs.) which contain nan,  (obs., channel, length)
+    load_array_train = np_train[~np.isnan(np_train).any(axis=(1,2))] 
+    load_array_test = np_test[~np.isnan(np_test).any(axis=(1,2))]
 
     return load_array_train, load_array_test
 
