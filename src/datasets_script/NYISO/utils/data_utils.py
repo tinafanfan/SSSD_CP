@@ -235,6 +235,10 @@ def train_test_select(df, train_start, train_end, test_start, test_end, zone_num
     load_array_train = np_train[~np.isnan(np_train).any(axis=(1,2))] 
     load_array_test = np_test[~np.isnan(np_test).any(axis=(1,2))]
 
+    # exchange channel and length (obs., 1, length) -> (obs., length, 1) 
+    load_array_train = np.einsum('ijk->ikj',load_array_train)
+    load_array_test = np.einsum('ijk->ikj',load_array_test)
+
     return load_array_train, load_array_test
 
 
