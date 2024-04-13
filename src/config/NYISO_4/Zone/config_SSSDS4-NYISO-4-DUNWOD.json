@@ -20,11 +20,11 @@
         "s4_layernorm":1
     },
     "train_config": {
-        "output_directory": "./results/NYISO_mix_fine_tune_2",
+        "output_directory": "./results/NYISO_4/Zone/NYISO_4_DUNWOD",
         "ckpt_iter": "max",
-        "iters_per_ckpt": 5000,
+        "iters_per_ckpt": 10000,
         "iters_per_logging": 1000,
-        "n_iters": 165000, 
+        "n_iters": 20000, 
         "learning_rate": 2e-4,
         "only_generate_missing": 1,
         "use_model": 2,
@@ -32,13 +32,13 @@
         "missing_k": 24
     },
     "trainset_config":{
-        "train_data_path": "./datasets/NYISO/dataset_2/mix/mix_fine_tune_data_2_stdd.npy",
-        "test_data_path": "./datasets/NYISO/dataset_2/mix/mix_test_data_2_stdd.npy",
+        "train_data_path": "./datasets/NYISO/dataset_4/zone/DUNWOD_train_stdd.npy",
+        "test_data_path": "./datasets/NYISO/dataset_4/zone/DUNWOD_test_stdd.npy",
         "segment_length":100,
         "sampling_rate": 100
     },
     "gen_config":{
-	    "output_directory": "./results/NYISO_mix_fine_tune_2",
-        "ckpt_path": "./results/NYISO_mix_fine_tune_2"
+	    "output_directory": "./results/NYISO_4/Zone/NYISO_4_DUNWOD",
+        "ckpt_path": "./results/NYISO_4/Zone/NYISO_4_DUNWOD"
     }
 }

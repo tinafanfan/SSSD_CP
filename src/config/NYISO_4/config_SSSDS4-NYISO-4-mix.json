@@ -5,8 +5,8 @@
         "beta_T": 0.02
     },
     "wavenet_config": {
-        "in_channels":11,
-	    "out_channels":11,
+        "in_channels":1,
+	    "out_channels":1,
         "num_res_layers": 36,
         "res_channels": 256,
         "skip_channels": 256,
@@ -20,11 +20,11 @@
         "s4_layernorm":1
     },
     "train_config": {
-        "output_directory": "./results/NYISO_2_all_fine_tune_2",
+        "output_directory": "./results/NYISO_4/NYISO_4_mix",
         "ckpt_iter": "max",
-        "iters_per_ckpt": 5000,
+        "iters_per_ckpt": 10000,
         "iters_per_logging": 1000,
-        "n_iters": 80000, 
+        "n_iters": 20000, 
         "learning_rate": 2e-4,
         "only_generate_missing": 1,
         "use_model": 2,
@@ -32,13 +32,13 @@
         "missing_k": 24
     },
     "trainset_config":{
-        "train_data_path": "./datasets/NYISO/dataset_2/all/all_fine_tune_data_2_stdd.npy",
-        "test_data_path": "./datasets/NYISO/dataset_2/all/all_test_data_2_stdd.npy",
+        "train_data_path": "./datasets/NYISO/dataset_4/mix/load_array_mix_train_stdd.npy",
+        "test_data_path": "./datasets/NYISO/dataset_4/mix/load_array_mix_test_stdd.npy",
         "segment_length":100,
         "sampling_rate": 100
     },
     "gen_config":{
-	    "output_directory": "./results/NYISO_2_all_fine_tune_2",
-        "ckpt_path": "./results/NYISO_2_all_fine_tune_2"
+	    "output_directory": "./results/NYISO_4/NYISO_4_mix",
+        "ckpt_path": "./results/NYISO_4/NYISO_4_mix"
     }
 }
