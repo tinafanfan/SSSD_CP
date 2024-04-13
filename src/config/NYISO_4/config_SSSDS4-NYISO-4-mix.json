@@ -24,7 +24,7 @@
         "ckpt_iter": "max",
         "iters_per_ckpt": 10000,
         "iters_per_logging": 1000,
-        "n_iters": 20000, 
+        "n_iters": 60000, 
         "learning_rate": 2e-4,
         "only_generate_missing": 1,
         "use_model": 2,
