@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import STL
+import datetime
 
 def printsth(sth):
     # print(sth)
@@ -171,7 +172,9 @@ def pd_to_numpy(load, zones_num, days_window):
     input: 
         load: dataframe with columns: Date, Load, Zone
         zones_num: how many zones(channels)
-    output: np array (observation, channel, length)
+    output: 
+        np array (observation, channel, length)
+        np array: day of the week of each obsevation
     '''
 
     # 使用 pd.date_range 生成日期序列
@@ -180,7 +183,9 @@ def pd_to_numpy(load, zones_num, days_window):
                          freq = '1D') 
 
     load_array = np.empty((1, zones_num, days_window*24 ))
-
+    
+    # a list to contain the day of the week
+    day_of_week = []
 
     # 產生 np array (6433, 11, days_window x 24)
     dim = (1, zones_num, days_window*24)
@@ -200,8 +205,12 @@ def pd_to_numpy(load, zones_num, days_window):
         pivot_np = pivot_np.reshape(dim) # (1,11,days_window x 24)
         load_array = np.concatenate((load_array, pivot_np), axis=0)
 
-    return load_array[1:] # delete the 1 st slice created by np.empty(dim)
+        # return day of the week
+        day_of_week.append(day.weekday())
 
+    # load_array delete the 1 st slice created by np.empty(dim)
+    return load_array[1:], np.array(day_of_week)
+ 
 
 def train_test_select(df, train_start, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
 
@@ -210,7 +219,9 @@ def train_test_select(df, train_start, train_end, test_start, test_end, zone_num
     可以取單一 zone (zone_name = 'N.Y.C.') 或所有 zone (zone_name = 'ALL')
 
     input: data_ls 長度為 8 (8 periods)的 list，每個元素都是 dataframe
-    output: 兩個 npy (obs, length, channel)
+    output: 
+        兩個 npy (obs, length, channel)
+        # np array: day of the week of each obsevation
     '''
     # np_list_train = []
     # np_list_test = []
@@ -228,8 +239,8 @@ def train_test_select(df, train_start, train_end, test_start, test_end, zone_num
                     & (df['Date']>=test_start)
                     & (df['Date']<=test_end)]
         
-    np_train = pd_to_numpy(df_train, zone_number, days_window)
-    np_test = pd_to_numpy(df_test, zone_number, days_window)
+    np_train, day_of_week_train = pd_to_numpy(df_train, zone_number, days_window)
+    np_test, day_of_week_test = pd_to_numpy(df_test, zone_number, days_window)
 
     # remove rows (reduce obs.) which contain nan,  (obs., channel, length)
     load_array_train = np_train[~np.isnan(np_train).any(axis=(1,2))] 
@@ -239,7 +250,57 @@ def train_test_select(df, train_start, train_end, test_start, test_end, zone_num
     load_array_train = np.einsum('ijk->ikj',load_array_train)
     load_array_test = np.einsum('ijk->ikj',load_array_test)
 
+
+    # remove elements based on NA in load_array_train and load_array_test
+    day_of_week_train = day_of_week_train[~np.isnan(np_train).any(axis=(1,2))] 
+    day_of_week_test = day_of_week_test[~np.isnan(np_test).any(axis=(1,2))]
+
     return load_array_train, load_array_test
+
+def train_test_select_2(df, train_start, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
+
+    '''
+    根據時間劃分，將 npy 分成 training set 和 testing set
+    可以取單一 zone (zone_name = 'N.Y.C.') 或所有 zone (zone_name = 'ALL')
+
+    input: data_ls 長度為 8 (8 periods)的 list，每個元素都是 dataframe
+    output: 
+        兩個 npy (obs, length, channel)
+        np array: day of the week of each obsevation
+    '''
+    # np_list_train = []
+    # np_list_test = []
+    # for df in data_ls:
+    if zone_name == 'ALL':
+        df_train = df[(df['Date']>=train_start) 
+                    & (df['Date']<=train_end)] 
+        df_test  = df[(df['Date']>=test_start) 
+                    & (df['Date']<=test_end)]
+    else:
+        df_train = df[(df['Zone']==zone_name) 
+                    & (df['Date']>=train_start) 
+                    & (df['Date']<=train_end)] 
+        df_test  = df[(df['Zone']==zone_name) 
+                    & (df['Date']>=test_start)
+                    & (df['Date']<=test_end)]
+        
+    np_train, day_of_week_train = pd_to_numpy(df_train, zone_number, days_window)
+    np_test, day_of_week_test = pd_to_numpy(df_test, zone_number, days_window)
+
+    # remove rows (reduce obs.) which contain nan,  (obs., channel, length)
+    load_array_train = np_train[~np.isnan(np_train).any(axis=(1,2))] 
+    load_array_test = np_test[~np.isnan(np_test).any(axis=(1,2))]
+
+    # exchange channel and length (obs., 1, length) -> (obs., length, 1) 
+    load_array_train = np.einsum('ijk->ikj',load_array_train)
+    load_array_test = np.einsum('ijk->ikj',load_array_test)
+
+
+    # remove elements based on NA in load_array_train and load_array_test
+    day_of_week_train = day_of_week_train[~np.isnan(np_train).any(axis=(1,2))] 
+    day_of_week_test = day_of_week_test[~np.isnan(np_test).any(axis=(1,2))]
+
+    return load_array_train, load_array_test, day_of_week_train, day_of_week_test
 
 
 def z_normalization(data, days_normalized):

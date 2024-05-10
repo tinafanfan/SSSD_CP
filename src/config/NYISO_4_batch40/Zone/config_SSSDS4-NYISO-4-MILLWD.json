@@ -20,17 +20,17 @@
         "s4_layernorm":1
     },
     "train_config": {
-        "output_directory": "./results/NYISO_4/Zone/NYISO_4_MILLWD",
+        "output_directory": "./results/NYISO_4_batch40/Zone/NYISO_4_MILLWD",
         "ckpt_iter": "max",
         "iters_per_ckpt": 10000,
         "iters_per_logging": 1000,
-        "n_iters": 60000, 
+        "n_iters": 10000, 
         "learning_rate": 2e-4,
         "only_generate_missing": 1,
         "use_model": 2,
         "masking": "forecast",
         "missing_k": 24,
-        "batch_size": 80
+        "batch_size": 40
     },
     "trainset_config":{
         "train_data_path": "./datasets/NYISO/dataset_4/zone/MILLWD_train_stdd.npy",
@@ -39,7 +39,7 @@
         "sampling_rate": 100
     },
     "gen_config":{
-	    "output_directory": "./results/NYISO_4/Zone/NYISO_4_MILLWD",
-        "ckpt_path": "./results/NYISO_4/Zone/NYISO_4_MILLWD"
+	    "output_directory": "./results/NYISO_4_batch40/Zone/NYISO_4_MILLWD",
+        "ckpt_path": "./results/NYISO_4_batch40/Zone/NYISO_4_MILLWD"
     }
 }
