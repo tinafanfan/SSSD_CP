@@ -96,7 +96,7 @@ def compute_E_star(L, U, true, alpha):
 
 def adjust_PI(L, U, E_star):
     """
-    goal: adjust prediction interval using conformal prediction
+    goal: adjust prediction interval using compute_E_star
     output: adjusted lower and upper bound, shape: (obs, channel, length)
     input: 
         L = lower bound to be adjusted, shape: (obs, channel, length)
@@ -105,6 +105,50 @@ def adjust_PI(L, U, E_star):
     """
     E_star_exd = np.expand_dims(E_star, axis=0)
     return L-E_star_exd, U+E_star_exd
+
+def compute_E_star_separate(L, U, true, alpha):
+    """
+    goal: compute the (1-alpha) quantile of conformity scores for lower and upper bound, respectively, i.e, E_star
+    output: E_star_L and E_star_U, shape: (channel, length)
+    input:
+        L = lower bound to be adjusted, shape: (obs, channel, length)
+        U = upper bound to be adjusted, shape: (obs, channel, length)
+        alpha = miscoverage rate of conformal prediction
+    """
+
+    alpha = 0.05
+
+    # lower bound
+    ## compute the conformity scores
+    E = L-true
+    ## compute the (1-alpha) quantile of conformity scores
+    CP_PAR = (1+1/true.shape[0])*(1-alpha)
+    E_star_L = np.quantile(E, CP_PAR, axis=0)
+
+    # upper bound
+    ## compute the conformity scores
+    E = true - U
+    ## compute the (1-alpha) quantile of conformity scores
+    CP_PAR = (1+1/true.shape[0])*(1-alpha)
+    E_star_U = np.quantile(E, CP_PAR, axis=0)
+
+    return E_star_L, E_star_U
+
+def adjust_PI_separate(L, U, E_star_L, E_star_U):
+    """
+    goal: adjust prediction interval using compute_E_star_separate
+    output: adjusted lower and upper bound, shape: (obs, channel, length)
+    input: 
+        L = lower bound to be adjusted, shape: (obs, channel, length)
+        U = upper bound to be adjusted, shape: (obs, channel, length)
+        E_star = scores, shape: (channel, length)
+    """
+    E_star_L_exd = np.expand_dims(E_star_L, axis=0)
+    E_star_U_exd = np.expand_dims(E_star_U, axis=0)
+    return L-E_star_L_exd, U+E_star_U_exd
+
+
+
 
 def coverage_rate(L, U, true):
     """
