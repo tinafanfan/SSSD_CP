@@ -116,7 +116,7 @@ def compute_E_star_separate(L, U, true, alpha):
         alpha = miscoverage rate of conformal prediction
     """
 
-    alpha = 0.05
+    # alpha = 0.05
 
     # lower bound
     ## compute the conformity scores

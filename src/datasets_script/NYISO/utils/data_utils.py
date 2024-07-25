@@ -257,7 +257,7 @@ def train_test_select(df, train_start, train_end, test_start, test_end, zone_num
 
     return load_array_train, load_array_test
 
-def train_test_select_2(df, train_start, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
+def train_test_select_week(df, train_start, train_end, test_start, test_end, zone_number, days_window, zone_name='ALL'):  
 
     '''
     根據時間劃分，將 npy 分成 training set 和 testing set
@@ -284,7 +284,7 @@ def train_test_select_2(df, train_start, train_end, test_start, test_end, zone_n
                     & (df['Date']>=test_start)
                     & (df['Date']<=test_end)]
         
-    np_train, day_of_week_train = pd_to_numpy(df_train, zone_number, days_window)
+    np_train, day_of_week_train = pd_to_numpy(df_train, zone_number, days_window) # np_train.shape = 4273 (4280-7)
     np_test, day_of_week_test = pd_to_numpy(df_test, zone_number, days_window)
 
     # remove rows (reduce obs.) which contain nan,  (obs., channel, length)
