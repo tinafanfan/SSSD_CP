@@ -20,26 +20,25 @@
         "s4_layernorm":1
     },
     "train_config": {
-        "output_directory": "./results/NYISO_4_batch40/Zone/NYISO_4_MILLWD",
+        "output_directory": "./results/NYISO_5_NYC",
         "ckpt_iter": "max",
         "iters_per_ckpt": 10000,
         "iters_per_logging": 1000,
-        "n_iters": 10000, 
+        "n_iters": 50000, 
         "learning_rate": 2e-4,
         "only_generate_missing": 1,
         "use_model": 2,
         "masking": "forecast",
-        "missing_k": 24,
-        "batch_size": 40
+        "missing_k": 24
     },
     "trainset_config":{
-        "train_data_path": "./datasets/NYISO/dataset_4/zone/MILLWD_train_stdd.npy",
-        "test_data_path": "./datasets/NYISO/dataset_4/zone/MILLWD_test_stdd.npy",
+        "train_data_path": "./datasets/NYISO/dataset_5/zone/N.Y.C._train_stdd.npy",
+        "test_data_path": "./datasets/NYISO/dataset_5/zone/N.Y.C._test_stdd.npy",
         "segment_length":100,
         "sampling_rate": 100
     },
     "gen_config":{
-	    "output_directory": "./results/NYISO_4_batch40/Zone/NYISO_4_MILLWD",
-        "ckpt_path": "./results/NYISO_4_batch40/Zone/NYISO_4_MILLWD"
+	    "output_directory": "./results/NYISO_5_NYC",
+        "ckpt_path": "./results/NYISO_5_NYC"
     }
 }

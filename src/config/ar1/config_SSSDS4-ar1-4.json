@@ -20,7 +20,7 @@
         "s4_layernorm":1
     },
     "train_config": {
-        "output_directory": "./results/ar1-4",
+        "output_directory": "./results/ar1/ar1-4",
         "ckpt_iter": "max",
         "iters_per_ckpt": 5000,
         "iters_per_logging": 1000,
@@ -38,7 +38,7 @@
         "sampling_rate": 100
     },
     "gen_config":{
-	    "output_directory": "./results/ar1-4",
-        "ckpt_path": "./results/ar1-4/"
+	    "output_directory": "./results/ar1/ar1-4",
+        "ckpt_path": "./results/ar1/ar1-4/"
     }
 }
