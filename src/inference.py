@@ -48,7 +48,12 @@ def generate(output_directory,
                                               diffusion_config["beta_0"],
                                               diffusion_config["beta_T"])
 
-
+    # Get shared output_directory ready
+    output_directory = os.path.join(output_directory, local_path, 'imputaiton_multiple_'+ str(round(int(ckpt_iter)/1000)) +'k')
+    if not os.path.isdir(output_directory):
+        os.makedirs(output_directory)
+        os.chmod(output_directory, 0o775)
+    print("output directory", output_directory, flush=True)
 
     # map diffusion hyperparameters to gpu
     for key in diffusion_hyperparams:
@@ -90,12 +95,6 @@ def generate(output_directory,
     except:
         raise Exception('No valid model found')
 
-    # Get shared output_directory ready
-    output_directory = os.path.join(output_directory, local_path, 'imputaiton_multiple_'+ str(round(int(ckpt_iter)/1000)) +'k')
-    if not os.path.isdir(output_directory):
-        os.makedirs(output_directory)
-        os.chmod(output_directory, 0o775)
-    print("output directory", output_directory, flush=True)
 
         
     ### Custom data loading and reshaping ###

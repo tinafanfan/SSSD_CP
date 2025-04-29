@@ -66,7 +66,7 @@ def pred_interval(pred, beta):
         pred = all data, shape(number of imputation files, obs, channel, length)
         beta = significance level of original prediction interval
     """
-    beta = 0.05
+    # beta = 0.05
     # compute original prediciton intervals
     L = np.quantile(pred, 0.025, axis=0)
     U = np.quantile(pred, 0.975, axis=0)
@@ -83,20 +83,22 @@ def compute_E_star(L, U, true, alpha):
         alpha = miscoverage rate of conformal prediction
     """
 
-    alpha = 0.05
+    # alpha = 0.05
 
     # compute the conformity scores
     E = np.maximum(L-true, true-U)
     
     # compute the (1-alpha) quantile of conformity scores
     CP_PAR = (1+1/true.shape[0])*(1-alpha)
+    if CP_PAR > 1:
+        CP_PAR = 1
     E_star = np.quantile(E, CP_PAR, axis=0)
 
     return E_star
 
 def adjust_PI(L, U, E_star):
     """
-    goal: adjust prediction interval using compute_E_star
+    goal: adjust prediction interval using conformal prediction
     output: adjusted lower and upper bound, shape: (obs, channel, length)
     input: 
         L = lower bound to be adjusted, shape: (obs, channel, length)
@@ -104,7 +106,7 @@ def adjust_PI(L, U, E_star):
         E_star = scores, shape: (channel, length)
     """
     E_star_exd = np.expand_dims(E_star, axis=0)
-    return L-E_star_exd, U+E_star_exd
+    return L-E_star_exd, U+E_star_exd    
 
 def compute_E_star_separate(L, U, true, alpha):
     """
@@ -147,13 +149,54 @@ def adjust_PI_separate(L, U, E_star_L, E_star_U):
     E_star_U_exd = np.expand_dims(E_star_U, axis=0)
     return L-E_star_L_exd, U+E_star_U_exd
 
+def compute_E_star_loadp(L, U, true, alpha, X):
+    """
+    loadp = locally adaptive
+    goal: compute the (1-alpha) quantile of conformity scores, i.e, E_star
+    output: E_star, shape: (channel, length)
+    input:
+        L = lower bound to be adjusted, shape: (obs, channel, length)
+        U = upper bound to be adjusted, shape: (obs, channel, length)        
+        alpha = miscoverage rate of conformal prediction
+        X = independent variable(obs, channel, length of given data = 168)
+    """
 
+    sd = np.std(X, axis = 2)
+    sd = sd.reshape(X.shape[0], X.shape[1], 1)
 
+    # compute the conformity scores
+    E = np.maximum((L-true)/sd, (true-U)/sd)
+    
+    # compute the (1-alpha) quantile of conformity scores
+    CP_PAR = (1+1/true.shape[0])*(1-alpha)
+    if CP_PAR > 1:
+        CP_PAR == 0.99
+    E_star = np.quantile(E, CP_PAR, axis=0)
+
+    return E_star
+
+def adjust_PI_loadp(L, U, E_star, X):
+    """
+    loadp = locally adaptive
+    goal: adjust prediction interval using conformal prediction
+    output: adjusted lower and upper bound, shape: (obs, channel, length)
+    input: 
+        L = lower bound to be adjusted, shape: (obs, channel, length)
+        U = upper bound to be adjusted, shape: (obs, channel, length)
+        E_star = scores, shape: (channel, length)
+        X = independent variable(obs, channel, length of given data = 168)
+    """
+
+    sd = np.std(X, axis = 2)
+    sd = sd.reshape(X.shape[0], X.shape[1], 1)
+
+    E_star_exd = np.expand_dims(E_star, axis=0)
+    return L-E_star_exd*sd, U+E_star_exd*sd
 
 def coverage_rate(L, U, true):
     """
     goal: compute the coverage rate, which is the proportion of [L,U] contains true data 
-    output: an array, shape (shape, length)
+    output: an list containing array(s), array shape = (24,). # of list = # of channels of input data
     input:
         L = lower bound, shape: (2209, 1, 24)
         U = upper bound, shape: (2209, 1, 24)
@@ -174,3 +217,23 @@ def generate_date_from_seq(value):
     formatted_date = target_date.strftime("%Y/%m/%d")
     
     return formatted_date
+
+
+def compute_E_star_SCP(pred, true, alpha = 0.05):
+    """
+    goal: split conformal prediction
+    output: lower and upper bounds of conformal prediciton
+    input: 
+        pred = prediction, shape: (obs, channel, length)
+        true = true data, shape: (obs, channel, length)
+        alpha = miscoverage rate of conformal prediction
+    """
+
+    ## compute the conformity scores
+    E = np.abs(pred-true)
+    ## compute the (1-alpha) quantile of conformity scores
+    CP_PAR = (1+1/true.shape[0])*(1-alpha)
+    E_star = np.quantile(E, CP_PAR, axis=0)
+    
+    ## reshape (1,24) to (1,1,24)
+    return np.expand_dims(E_star, axis=0) 
