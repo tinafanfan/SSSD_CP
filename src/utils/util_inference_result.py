@@ -73,8 +73,8 @@ def pred_interval(pred, beta):
     """
     # beta = 0.05
     # compute original prediciton intervals
-    L = np.quantile(pred, 0.025, axis=0)
-    U = np.quantile(pred, 0.975, axis=0)
+    L = np.quantile(pred, beta/2, axis=0)
+    U = np.quantile(pred, 1-beta/2, axis=0)
 
     return L, U
 
@@ -330,7 +330,7 @@ def PI_linechart(obs,y, L, U, figure_title = "Prediction interval", PI_label = "
         L: lower bound of PI, an array, shape = (obs, length = 24)
         U: upper bound of PI, an array, shape = (obs, length = 24)
     """    
-    date = generate_date_from_seq(obs)
+    # date = generate_date_from_seq(obs)
     
     x = range(0,y.shape[1])
     x_predict = range(y.shape[1]-L.shape[1], y.shape[1])
@@ -343,11 +343,11 @@ def PI_linechart(obs,y, L, U, figure_title = "Prediction interval", PI_label = "
     plt.rcParams['font.size'] = 20 # 設置繪圖時的字體大小
 
     plt.plot(x, y_single, color = 'tab:gray', label = "Data")
-    plt.title(figure_title +' ('+date+')')
+    # plt.title(figure_title +' ('+date+')')
 
     # plt.xticks(rotation=45) 
     plt.fill_between(x_predict, lower, upper, color=PI_color, alpha=0.4, label = PI_label)
-    plt.ylim(-2.5, 2.5) 
+    # plt.ylim(-2.5, 2.5) 
     plt.legend(loc = "upper left")
     plt.show()    
 def indicator_function(condition, shape):
